@@ -68,13 +68,6 @@ public class townycolor extends JavaPlugin {
 			colorlist.add(" ");
 			colorlist.add("&8&m-------------------------------------------------------------------------");
 			config.set("Messages.AvalibleColors", colorlist);
-			ArrayList<String> adminhelp = new ArrayList<String>();
-			adminhelp.add("&8&m----------------------------&8[&dColor Admin&8]&8&m----------------------------");
-			adminhelp.add(" ");
-			adminhelp.add("&8- &6/color reset <name> &8- &6Resets a players color chat to the default color (white)");
-			adminhelp.add(" ");
-			adminhelp.add("&8&m--------------------------------------------------------------------");
-			config.set("Messages.AdminHelp", adminhelp);
 			ArrayList<String> bannedcolors = new ArrayList<String>();
 			bannedcolors.add("&d");
 			bannedcolors.add("&c");
@@ -101,8 +94,6 @@ public class townycolor extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		Player p = (Player)s;
-		String playerName = args[0];
-		Player player = Bukkit.getPlayer(playerName);
 		String colorName = args[1].toUpperCase();
 		if (cmd.getName().equalsIgnoreCase("color") || cmd.getName().equalsIgnoreCase("c")) {
 			if (p.hasPermission("vox.towny.color.use")) {
@@ -113,25 +104,21 @@ public class townycolor extends JavaPlugin {
 				if (args.length == 1) {
 					if (args[0].equalsIgnoreCase("color")) {
 						if (s instanceof Player) {
-							if (player != null) {
 								try {
 									color = ChatColor.valueOf(colorName);
 								} catch (IllegalArgumentException ex) {
 									p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
 								}
-							} else {
-								p.sendMessage("Player is offline!");
-								Bukkit.getLogger().info(playerName + " is offline! Command executed by " + p.getName());
+								Bukkit.getLogger().info("[TownyColor] Command executed by " + p.getName());
 							}
 							} else {
 								Bukkit.getLogger().info("[TownyColor] Only players can do this command, noob!");
-							}
-						}				
-			}
+							}				
+				}
 			} else {
 				p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.NoPermission")));
 			}
-	}
+		}
     return true;
 	}
 }

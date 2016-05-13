@@ -83,11 +83,11 @@ public class townycolor extends JavaPlugin {
 		if (save) {
 			try {
 				config.save(configf);
-				Bukkit.getLogger().info("[TownyColors] Creating config.yml....");
-				Bukkit.getLogger().info("[TownyColors] Crated config.yml!");
+				Bukkit.getLogger().info("[TownyColor] Creating config.yml....");
+				Bukkit.getLogger().info("[TownyColor] Crated config.yml!");
 			} catch (IOException e) {
-				Bukkit.getLogger().info("[TownyColors] Failed to create/save config.yml!");
-				Bukkit.getLogger().info("[TownyColors] Caused by: " + e.getMessage());
+				Bukkit.getLogger().info("[TownyColor] Failed to create/save config.yml!");
+				Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
 			}
 		}
 	}
@@ -109,6 +109,7 @@ public class townycolor extends JavaPlugin {
 								} catch (IllegalArgumentException ex) {
 									p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
 								}
+								p.equals(obj)
 								Bukkit.getLogger().info("[TownyColor] Command executed by " + p.getName());
 							}
 							} else {

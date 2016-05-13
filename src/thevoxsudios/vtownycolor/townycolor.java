@@ -17,10 +17,9 @@ public class townycolor extends JavaPlugin {
 
 	private File configf = null;
 	private FileConfiguration config = null;
-	private ChatColor color = null;
 	private String[] bannedColors = getConfig().getStringList("Banned-Colors").toArray(new String[getConfig().getStringList("Banned-Colors").size()]);
 	private String[] bannedAddons = getConfig().getStringList("Banned-Addons").toArray(new String[getConfig().getStringList("Banned-Addons").size()]);	
-	
+	private ChatColor ccolor;
 	
 	@Override
 	public void onEnable() {
@@ -94,31 +93,19 @@ public class townycolor extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		Player p = (Player)s;
-		String colorName = args[1].toUpperCase();
 		if (cmd.getName().equalsIgnoreCase("color") || cmd.getName().equalsIgnoreCase("c")) {
 			if (p.hasPermission("vox.towny.color.use")) {
-				if (args.length == 0) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.Help")));
-					return true;
-				}				
-				if (args.length == 1) {
-					if (args[0].equalsIgnoreCase("color")) {
-						if (s instanceof Player) {
-								try {
-									color = ChatColor.valueOf(colorName);
-								} catch (IllegalArgumentException ex) {
-									p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
-								}
-								p.equals(obj)
-								Bukkit.getLogger().info("[TownyColor] Command executed by " + p.getName());
-							}
-							} else {
-								Bukkit.getLogger().info("[TownyColor] Only players can do this command, noob!");
-							}				
+				if (s instanceof Player) {
+					try {
+						ccolor color = ccolor.valueOf(args./*toUpperCase doesn't work*/);
+					} catch (NullPointerException e) {
+						Bukkit.getLogger().info("[TownyColor] Problem occured when trying to get color from " + p.getName());
+						Bukkit.getLogger().info("[TownyColor] Caused by " + e.getMessage());
+					}
 				}
-			} else {
-				p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.NoPermission")));
 			}
+			
+			
 		}
     return true;
 	}

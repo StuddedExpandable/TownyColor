@@ -19,8 +19,7 @@ public class townycolor extends JavaPlugin {
 	private FileConfiguration config = null;
 	private String[] bannedColors = getConfig().getStringList("Banned-Colors").toArray(new String[getConfig().getStringList("Banned-Colors").size()]);
 	private String[] bannedAddons = getConfig().getStringList("Banned-Addons").toArray(new String[getConfig().getStringList("Banned-Addons").size()]);	
-	private ChatColor ccolor;
-	
+	private ChatColor color = null;
 	@Override
 	public void onEnable() {
 		createConfig();
@@ -40,10 +39,11 @@ public class townycolor extends JavaPlugin {
 		
 		boolean save = false;
 		if (!configf.exists()) {
-			config.set("Messages.NoPermission", "You do not have permission to do this command!");
-			config.set("Messages.BannedColor", "You are not allowed to use <bannedcolor> as it is being used by staff ranks!");
-			config.set("Messages.SetColorTo", "You have just set your chat color to <color>!");
-			config.set("Messages.IllegalArg", "That is a invalid color arguement! Do /color list to view the list of valid avalible colours!");
+			config.set("Messages.NoPermission", "&cYou do not have permission to do this command!");
+			config.set("Messages.BannedColor", "&cYou are not allowed to use <bannedcolor> as it is being used by staff ranks!");
+			config.set("Messages.SetColorTo", "&aYou have just set your chat color to <color>!");
+			config.set("Messages.IllegalArg", "&cThat is a invalid color arguement! Do /color list to view the list of valid avalible colours!");
+			config.set("Messages.ErrorOccured", "&cAn error as occured! Please notify a staff member to get this problem resolved");
 			ArrayList<String> help = new ArrayList<String>();
 			help.add("&8&m----------------------------&8[&dColor Help&8]&8&m----------------------------");
 			help.add(" ");
@@ -56,14 +56,14 @@ public class townycolor extends JavaPlugin {
 			ArrayList<String> colorlist = new ArrayList<String>();
 			colorlist.add("&8&m----------------------------&8[&dAvalible Colors&8]&8&m----------------------------");
 			colorlist.add(" ");
-			colorlist.add("&8- &1DarkBlue");
-			colorlist.add("&8- &2DarkGreen");
-			colorlist.add("&8- &5DarkPurple");
-			colorlist.add("&8- &eYellow");
-			colorlist.add("&8- &6Gold");
-			colorlist.add("&8- &7LightGrey");
-			colorlist.add("&8- &8DarkGrey");
-			colorlist.add("&8- &9Blue");
+			colorlist.add("&8- &1DARKBLUE");
+			colorlist.add("&8- &2DARKGREEN");
+			colorlist.add("&8- &5DARKPURPLE");
+			colorlist.add("&8- &eYELOW");
+			colorlist.add("&8- &6GOLD");
+			colorlist.add("&8- &7LIGHTGREY");
+			colorlist.add("&8- &8DARKGREY");
+			colorlist.add("&8- &9BLUE");
 			colorlist.add(" ");
 			colorlist.add("&8&m-------------------------------------------------------------------------");
 			config.set("Messages.AvalibleColors", colorlist);
@@ -97,10 +97,17 @@ public class townycolor extends JavaPlugin {
 			if (p.hasPermission("vox.towny.color.use")) {
 				if (s instanceof Player) {
 					try {
-						ccolor color = ccolor.valueOf(args./*toUpperCase doesn't work*/);
+						color = ChatColor.valueOf(args[1].toUpperCase());
 					} catch (NullPointerException e) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Mesages.ErrorOccured")));
 						Bukkit.getLogger().info("[TownyColor] Problem occured when trying to get color from " + p.getName());
 						Bukkit.getLogger().info("[TownyColor] Caused by " + e.getMessage());
+					}
+					if (color.equals(bannedAddons) || (color.equals(bannedColors))) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
+					} else {
+						getServer().dispatchCommand(getServer().getConsoleSender(),"pex user " + p.getName() + " set suffix " + color);
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo").replace("<color>", (CharSequence) color)));
 					}
 				}
 			}

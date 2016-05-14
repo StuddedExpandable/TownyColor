@@ -1,0 +1,21 @@
+name: TownyColor
+version: 0.01
+main: thevoxstudios.vtownycolor.townycolor
+author: TheMasteredPanda
+commands:
+  color:
+    aliases: [c]
+    permission: vox.towny.color.use
+    default: false
+  color set:
+    aliases: [c set]
+    permission: vox.towny.color.use
+    default: false 
+  color list:
+    aliases: [c list]
+    permission: vox.towny.color.use
+    default: false
+  color reset:
+    aliases: [c reset]
+    permission: vox.towny.color.use
+    default: false

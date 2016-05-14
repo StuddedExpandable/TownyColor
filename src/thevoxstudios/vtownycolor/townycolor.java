@@ -112,23 +112,26 @@ public class townycolor extends JavaPlugin {
 	              p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorReset")));
 	              getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
 	            }
-	            else if (args[1].equalsIgnoreCase("set")) {	            
-	            	try {
-	            		color = ChatColor.valueOf(args[0].toUpperCase());
-		            	if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
-		            		p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
-		            	} else {
-		            		getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color.toString());
-		            		p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo")));
-		            	}
-	            	} catch (NullPointerException e) {
-	            		Bukkit.getLogger().info("[TownyColor] An error occured when trying to get " + p.getName() + "'s requested color " + color.toString());
-	            		Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
-	            	}
-	            }
+	            else if (args.length == 2) {
+	                if (args[0].equalsIgnoreCase("set")) {
+	                	System.out.println("Passed set argument");
+	                  try {
+	                    color = ChatColor.valueOf(args[1].toUpperCase());
+	                    if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
+	                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
+	                    } else {
+	                      getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color.toString());
+	                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo")));
+	                    }
+	                  } catch (NullPointerException e) {
+	                    Bukkit.getLogger().info("[TownyColor] An error occured when trying to get " + p.getName() + "'s requested color " + color.toString());
+	                    Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
+	                  }
+	                }
 	            }
 	          }
 	        }
+	      }
 	      return true;
 	    }
 }

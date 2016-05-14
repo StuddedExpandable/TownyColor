@@ -95,34 +95,24 @@ public class townycolor extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
 		Player p = (Player)s;
-		if (p.hasPermission("vox.towny.color.use")) {
-			if (cmd.getName().equalsIgnoreCase("color") && args.length == 0) {
-				for (String chelp : getConfig().getStringList("Messages.Help")) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', chelp));
-				}
-			} else if (cmd.getName().equalsIgnoreCase("color list")) {
-				for (String clist : getConfig().getStringList("Messages.AvalibleColors")) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', clist));
-				} 
-				} else if (cmd.getName().equalsIgnoreCase("color reset")) {
-					p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorReset")));
-					getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
-				} else if (cmd.getName().equalsIgnoreCase("color set")) {
-					try {
-						color = ChatColor.valueOf(args[0].toUpperCase());
-						System.out.println("DB: got color " + color);
-					} catch (NullPointerException e) {
-						Bukkit.getLogger().info("[TownyColor] An error occured when attempted to get " + p.getName() + "'s requested color " + color);
-						Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());	
-					}
-					if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
-						p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
-					} else {
-						getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color);
-						p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorSetTo").replace("<color>", (CharSequence) color)));
+		if (cmd.getName().equalsIgnoreCase("color")) {
+			if (p.hasPermission("vox.towny.color.use")) {
+				if (args.length == 0) {
+					for (String chelp : getConfig().getStringList("Messages.Help")) {
+						p.sendMessage(ChatColor.translateAlternateColorCodes('&', chelp));
 					}
 				}
+	} else if (args[0].equalsIgnoreCase("list")) {
+		if (args.length == 1) {
+			for (String clist : getConfig().getStringList("Messages.AvalibleColors")) {
+				p.sendMessage(ChatColor.translateAlternateColorCodes('&', clist));
 			}
-    return true;
+		}
+	} else if (args[0].equalsIgnoreCase("reset")) {
+		p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorReset")));
+		getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
+	}
+	}
+		return true;
 	}
 }

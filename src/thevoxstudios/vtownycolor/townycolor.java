@@ -54,7 +54,7 @@ public class townycolor extends JavaPlugin {
 			help.add(" ");
 			help.add("&8- &6/color set <color> &8- &7 changes your chat to the request color.");
 			help.add("&8- &6/color reset &8- &7Resets your chat to the default color (white)");
-			help.add("&8- &6/color list&8- &7Shows the list of allowed colors");
+			help.add("&8- &6/color list &8- &7Shows the list of allowed colors");
 			help.add(" ");
 			help.add("&8&m------------------------------------------------------------------");
 			config.set("Messages.Help", help);
@@ -120,15 +120,15 @@ public class townycolor extends JavaPlugin {
 									Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
 								}
 							}
-						}
-					if (args.length > 1 && args[0].equalsIgnoreCase("list")) {
-						for (String clist : getConfig().getStringList("Messages.AvalibleColors")) {
-							p.sendMessage(ChatColor.translateAlternateColorCodes('&', clist));
-						}
-					}
-					if (args.length > 1 && args[0].equalsIgnoreCase("reset")) {
-						getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
-					}
+							if (args.length > 1 && args[0].equalsIgnoreCase("list")) {
+								for (String clist : getConfig().getStringList("Messages.AvalibleColors")) {
+									p.sendMessage(ChatColor.translateAlternateColorCodes('&', clist));
+								}
+							}
+							if (args.length > 1 && args[0].equalsIgnoreCase("reset")) {
+								getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
+							}
+				     }
 				}
 			}
 		}

@@ -11,24 +11,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class townycolor extends JavaPlugin {
+public class townycolor extends JavaPlugin implements Listener {
 
-	private File configf = null;
-	private FileConfiguration config = null;
-	private String[] bannedColors = getConfig().getStringList("Banned-Colors").toArray(new String[getConfig().getStringList("Banned-Colors").size()]);
-	private String[] bannedAddons = getConfig().getStringList("Banned-Addons").toArray(new String[getConfig().getStringList("Banned-Addons").size()]);	
-	private ChatColor color = null;
+	private File configf, colorsf = null;
+	private FileConfiguration config, colors = null;
+	private String[] allowedColors = getConfig().getStringList("Allowed-Colors").toArray(new String[getConfig().getStringList("Banned-Addons").size()]);	
 	
 	@Override
 	public void onEnable() {
+		createColors();
 		createConfig();
 		Bukkit.getLogger().info("[TownyColor] is now enabled!");
+		getServer().getPluginManager().registerEvents(this, this);
 	}
 	
 	@Override
 	public void onDisable() {
+		saveConfig();
 		Bukkit.getLogger().info("[TownyColor] is now diabled....cya!");
 		
 	}
@@ -45,13 +49,13 @@ public class townycolor extends JavaPlugin {
 			config.set("Messages.IllegalArg", "&cThat is a invalid color arguement! Do /color list to view the list of valid avalible colours!");
 			config.set("Messages.ErrorOccured", "&cAn error as occured! Please notify a staff member to get this problem resolved");
 			config.set("Messages.ColorReset", "&aYour color has been reset to white!");
-			config.set("Messages.ForColorsGoHere", "&aTo view the list of avalible color please do /color list");
+			config.set("Messages.FordataGoHere", "&aTo view the list of avalible color please do /color list");
 			ArrayList<String> help = new ArrayList<String>();
 			help.add("&8&m---------------------------&8[&aColor Help&8]&8&m---------------------------");
 			help.add(" ");
 			help.add("&8- &6/color set <color> &8- &7 changes your chat to the request color.");
 			help.add("&8- &6/color reset &8- &7Resets your chat to the default color (white)");
-			help.add("&8- &6/color list &8- &7Shows the list of allowed colors");
+			help.add("&8- &6/color list &8- &7Shows the list of allowed data");
 			help.add(" ");
 			help.add("&8&m------------------------------------------------------------------");
 			config.set("Messages.Help", help);
@@ -70,16 +74,17 @@ public class townycolor extends JavaPlugin {
 			colorlist.add(" ");
 			colorlist.add("&8&m---------------------------------------------------------------------");
 			config.set("Messages.AvalibleColors", colorlist);
-			ArrayList<String> bannedcolors = new ArrayList<String>();
-			bannedcolors.add("&d");
-			bannedcolors.add("&c");
-			bannedcolors.add("&b");
-			config.set("Banned-Colors", bannedcolors);
-			ArrayList<String> bannedaddons = new ArrayList<String>();
-			bannedaddons.add("&m");
-			bannedaddons.add("&l");
-			bannedaddons.add("&n");
-			config.set("Banned-Addons", bannedaddons);
+			ArrayList<String> allowedcolors = new ArrayList<String>();
+			allowedcolors.add("&1");
+			allowedcolors.add("&2");
+			allowedcolors.add("&5");
+			allowedcolors.add("&a");
+			allowedcolors.add("&7");
+			allowedcolors.add("&8");
+			allowedcolors.add("&e");
+			allowedcolors.add("&6");
+			allowedcolors.add("&9");
+			config.set("Allowed-Colors", allowedcolors);
 			save = true;
 		}
 		if (save) {
@@ -92,6 +97,47 @@ public class townycolor extends JavaPlugin {
 				Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
 			}
 		}
+	}
+	
+	private void createColors() {
+		colorsf = new File(getDataFolder() + File.separator + "colors.yml");
+		colors = YamlConfiguration.loadConfiguration(colorsf);
+		
+		boolean save = false;
+		if (!colorsf.exists()) {
+			save = true;
+		}
+		
+		if (save) {
+			try {
+				colors.save(colorsf);
+				Bukkit.getLogger().info("[TownyColor] Creating colors.yml....");
+				Bukkit.getLogger().info("[TownyColor] Created colors.yml!");
+			} catch (IOException e) {
+				Bukkit.getLogger().info("[TownyColor] Failed to save/create colors.yml!");
+				Bukkit.getLogger().info("[TownyColor] Caused by" + e.getMessage());
+			}
+		}
+	}
+	
+	public void saveColors() {
+		try {
+			colors.save(colorsf);
+		} catch (Exception e) {
+			Bukkit.getLogger().info("[TownyColor] Failed to save colors.yml!");
+			Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
+		}
+	}
+	
+	public YamlConfiguration getColors() {
+		return (YamlConfiguration) colors;
+	}
+	
+	
+	
+	@EventHandler
+	public void onChat(AsyncPlayerChatEvent e) {
+		e.setMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(e.getPlayer().getName())) + e.getMessage());
 	}
 	
 	 public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
@@ -113,27 +159,18 @@ public class townycolor extends JavaPlugin {
 	              p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorReset")));
 	              getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
 	            }
-	            else if (args.length == 1) {
-	                if (args[0].equalsIgnoreCase("set")) {
-	                	System.out.println("Passed set argument");
-	                  try {
-	                    if (args.length == 2) {
-	                    	color = ChatColor.valueOf(args[2].toUpperCase());
-	                    }
-	                    if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
-		                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
-		                    } else {
-		                      getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color.toString());
-		                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo")));
-		                    }
-	                    } catch (NullPointerException e) {
-	                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ForColorsGoHere")));
-	                    Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
-	                  }
-	                }
-	                }
-	             }
+	            else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
+	            	System.out.println("DB: /color set fired");
+	            	if (args[1].equals(allowedColors)) {
+	            		getColors().set(p.getName(), args[1]);
+	            		System.out.println("DB: Got arg");
+	            	} else {
+	            		p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
+	            		System.out.println("DB: Sent IllegalArg message.");
+	            	}
+	            } 	
 	          }
+	        }
 	      }
 	      return true;
 	 }

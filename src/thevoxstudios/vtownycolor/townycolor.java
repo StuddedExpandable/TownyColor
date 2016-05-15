@@ -45,6 +45,7 @@ public class townycolor extends JavaPlugin {
 			config.set("Messages.IllegalArg", "&cThat is a invalid color arguement! Do /color list to view the list of valid avalible colours!");
 			config.set("Messages.ErrorOccured", "&cAn error as occured! Please notify a staff member to get this problem resolved");
 			config.set("Messages.ColorReset", "&aYour color has been reset to white!");
+			config.set("Messages.ForColorsGoHere", "&aTo view the list of avalible color please do /color list");
 			ArrayList<String> help = new ArrayList<String>();
 			help.add("&8&m---------------------------&8[&aColor Help&8]&8&m---------------------------");
 			help.add(" ");
@@ -112,26 +113,28 @@ public class townycolor extends JavaPlugin {
 	              p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ColorReset")));
 	              getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + ChatColor.RESET);
 	            }
-	            else if (args.length == 2) {
+	            else if (args.length == 1) {
 	                if (args[0].equalsIgnoreCase("set")) {
 	                	System.out.println("Passed set argument");
 	                  try {
-	                    color = ChatColor.valueOf(args[1].toUpperCase());
-	                    if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
-	                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
-	                    } else {
-	                      getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color.toString());
-	                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo")));
+	                    if (args.length == 2) {
+	                    	color = ChatColor.valueOf(args[2].toUpperCase());
 	                    }
-	                  } catch (NullPointerException e) {
-	                    Bukkit.getLogger().info("[TownyColor] An error occured when trying to get " + p.getName() + "'s requested color " + color.toString());
+	                    if (color.equals(bannedColors) || (color.equals(bannedAddons))) {
+		                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.IllegalArg")));
+		                    } else {
+		                      getServer().dispatchCommand(getServer().getConsoleSender(), "pex user " + p.getName() + " set suffix " + color.toString());
+		                      p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.SetColorTo")));
+		                    }
+	                    } catch (NullPointerException e) {
+	                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString("Messages.ForColorsGoHere")));
 	                    Bukkit.getLogger().info("[TownyColor] Caused by: " + e.getMessage());
 	                  }
 	                }
-	            }
+	                }
+	             }
 	          }
-	        }
 	      }
 	      return true;
-	    }
+	 }
 }

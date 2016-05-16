@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,11 +16,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class townycolor extends JavaPlugin implements Listener {
+public class townycolor extends JavaPlugin implements Listener, CommandExecutor {
 
 	private File configf, colorsf = null;
-	private FileConfiguration config, colors = null;
-	private String[] allowedColors = getConfig().getStringList("Allowed-Colors").toArray(new String[getConfig().getStringList("Allowed-Colors").size()]);	
+	private YamlConfiguration config, colors = null;
 	
 	@Override
 	public void onEnable() {
@@ -28,6 +27,7 @@ public class townycolor extends JavaPlugin implements Listener {
 		createConfig();
 		Bukkit.getLogger().info("[TownyColor] is now enabled!");
 		getServer().getPluginManager().registerEvents(this, this);
+		getServer().getPluginCommand("color").setExecutor(this);
 	}
 	
 	@Override
@@ -165,7 +165,7 @@ public class townycolor extends JavaPlugin implements Listener {
 	            }
 	            else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
 	            	System.out.println("DB: /color set fired");
-	            	if (args[1].equals(allowedColors)) {
+	            	if (args[1].equals(getConfig().getStringList("Allowed-Colors"))) {
 	            		getColors().set(p.getName(), args[1]);
 	            		System.out.println("DB: Got arg");
 	            	} else {

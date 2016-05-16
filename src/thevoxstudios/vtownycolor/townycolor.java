@@ -20,7 +20,7 @@ public class townycolor extends JavaPlugin implements Listener {
 
 	private File configf, colorsf = null;
 	private FileConfiguration config, colors = null;
-	private String[] allowedColors = getConfig().getStringList("Allowed-Colors").toArray(new String[getConfig().getStringList("Banned-Addons").size()]);	
+	private String[] allowedColors = getConfig().getStringList("Allowed-Colors").toArray(new String[getConfig().getStringList("Allowed-Colors").size()]);	
 	
 	@Override
 	public void onEnable() {
@@ -137,7 +137,11 @@ public class townycolor extends JavaPlugin implements Listener {
 	
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
-		e.setMessage(ChatColor.translateAlternateColorCodes('&', getConfig().getString(e.getPlayer().getName())) + e.getMessage());
+		try {
+		e.setMessage(ChatColor.translateAlternateColorCodes('&', getColors().getString(e.getPlayer().getName())) + e.getMessage());
+		} catch (NullPointerException chate) {
+			Bukkit.getLogger().info("DB: No color given");
+		}
 	}
 	
 	 public boolean onCommand(CommandSender s, Command cmd, String label, String[] args) {
